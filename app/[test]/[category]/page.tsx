@@ -13,6 +13,7 @@ export default function CategoryPage({ params }: PageProps) {
   const { test, category } = params;
 
   // Define category options for each category
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const categoryOptions: Record<string, any[]> = {
     writing: [
       {

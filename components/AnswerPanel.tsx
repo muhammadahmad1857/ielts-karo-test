@@ -37,7 +37,7 @@ export default function AnswerPanel({
       <WordCount text={text} part={part} />
       {disabled && (
         <div className="mb-2 rounded-md bg-yellow-50 border border-yellow-200 p-2 text-xs text-yellow-800 dark:bg-yellow-900/20 dark:border-yellow-800 dark:text-yellow-200">
-          ⏰ Time's up! Fields are now locked and cannot be edited.
+          ⏰ Time&apos;s up! Fields are now locked and cannot be edited.
         </div>
       )}
       <textarea
@@ -71,9 +71,9 @@ export default function AnswerPanel({
       </h2>
       <div className="flex-1 overflow-auto">
         {submitting ? (
-            <>
-            <Spinner/>
-          <p>Submitting your response…</p>
+          <>
+            <Spinner />
+            <p>Submitting your response…</p>
           </>
         ) : error ? (
           <>

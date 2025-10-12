@@ -1103,7 +1103,7 @@ export default function WritingTest({
       .filter((p) => !p.done);
 
     let hasFailedPart = false;
-    let failedParts: string[] = [];
+    const failedParts: string[] = [];
 
     unfinishedParts.forEach((p) => {
       const minWords = minWordsFor(questions[p.idx].part);

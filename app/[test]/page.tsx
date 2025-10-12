@@ -12,6 +12,7 @@ export default function TestPage({ params }: PageProps) {
   const { test } = params;
 
   // Define test categories for each test type
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const testCategories: Record<string, any[]> = {
     ielts: [
       {
