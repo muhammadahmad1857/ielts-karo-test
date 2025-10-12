@@ -88,8 +88,6 @@ Give reasons for your answer and include any relevant examples from your own kno
         questions={questions}
         time={3600}
         examType={examType}
-        testType={type}
-        testPart={part}
       />
     </main>
   );
