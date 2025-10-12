@@ -1,47 +1,73 @@
-import { Suspense } from "react"
-import ExamWorkspace from "@/components/exam-workspace"
-
-// Dummy questions for now. In the future, fetch from your API and pass as props.
-const DUMMY_QUESTIONS = [
-  {
-    id: "p1-q1",
-    part: 1 as const,
-    title: "Part 1 • Summarise the information",
-    timeSeconds: 20 * 60,
-    minWords: 150,
-    promptMd: `
-### Part 1
-You should spend about 20 minutes on this task. Write at least **150 words**.
-
-The table below shows changes in the total population of New York City from 1800 to 2000. The second and third tables show changes in the population of the five districts of the city (Manhattan, Brooklyn, Bronx, Queens, Staten Island) over the same period.
-
-Summarise the information by selecting and reporting the main features, and make comparisons where relevant.
-    `,
-    imageSrc: "/images/mock-idea.png",
-    imageAlt: "UI idea for IELTS workspace split layout",
-  },
-  {
-    id: "p2-q1",
-    part: 2 as const,
-    title: "Part 2 • Opinion essay",
-    timeSeconds: 40 * 60,
-    minWords: 250,
-    promptMd: `
-### Part 2
-Some people believe that cities should invest more in public transportation than in building new roads.  
-To what extent do you agree or disagree?
-
-Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least **250 words**.
-    `,
-  },
-]
+import Link from "next/link";
+import { Card } from "@/components/ui/card";
 
 export default function Page() {
+  const tests = [
+    {
+      id: "ielts",
+      name: "IELTS",
+      description: "International English Language Testing System",
+      icon: "📝",
+      color: "bg-blue-500",
+    },
+    {
+      id: "pte",
+      name: "PTE",
+      description: "Pearson Test of English",
+      icon: "🎤",
+      color: "bg-green-500",
+    },
+    {
+      id: "toefl",
+      name: "TOEFL",
+      description: "Test of English as a Foreign Language",
+      icon: "🌍",
+      color: "bg-purple-500",
+    },
+  ];
+
   return (
-    <main className="min-h-dvh">
-      <Suspense fallback={<div className="p-6 text-muted-foreground">Loading test…</div>}>
-        <ExamWorkspace questions={DUMMY_QUESTIONS} initialRequirePart1ToUnlock={true} title="Writing Test" />
-      </Suspense>
+    <main className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Practice Modules
+          </h1>
+          <p className="text-xl text-gray-600">
+            Choose a test type to start practicing
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {tests.map((test) => (
+            <Link key={test.id} href={`/${test.id}`}>
+              <Card className="p-8 text-center hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-blue-300">
+                <div
+                  className={`w-16 h-16 ${test.color} rounded-full flex items-center justify-center text-3xl text-white mx-auto mb-6`}
+                >
+                  {test.icon}
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                  {test.name}
+                </h2>
+                <p className="text-gray-600 mb-6">{test.description}</p>
+                <div className="bg-gray-200 rounded-full h-2 mb-4">
+                  <div
+                    className="bg-gray-400 h-2 rounded-full"
+                    style={{ width: "0%" }}
+                  ></div>
+                </div>
+                <p className="text-sm text-gray-500 mb-4">Progress 0%</p>
+                <button
+                  className={`w-full py-3 px-6 ${test.color} text-white rounded-lg font-semibold hover:opacity-90 transition-opacity`}
+                >
+                  Practice Now
+                </button>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </div>
     </main>
-  )
+  );
 }

@@ -1,0 +1,23 @@
+{
+  "ielts": {
+    "id": "ielts",
+    "title": "IELTS",
+    "description": "International English Language Testing System",
+    "duration_seconds": 3600,
+    "categories": ["listening", "reading", "writing", "speaking"]
+  },
+  "pte": {
+    "id": "pte",
+    "title": "PTE",
+    "description": "Pearson Test of English",
+    "duration_seconds": 1800,
+    "categories": ["listening", "reading", "writing", "speaking"]
+  },
+  "toefl": {
+    "id": "toefl",
+    "title": "TOEFL",
+    "description": "Test of English as a Foreign Language",
+    "duration_seconds": 16200,
+    "categories": ["listening", "reading", "writing", "speaking"]
+  }
+}

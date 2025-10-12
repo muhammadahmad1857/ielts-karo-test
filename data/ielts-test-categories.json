@@ -1,0 +1,21 @@
+{
+  "categories": [
+    {
+      "id": "writing",
+      "name": "Writing",
+      "description": "IELTS Writing test categories and tasks.",
+      "subCategories": [
+        {
+          "id": "general",
+          "name": "General",
+          "description": "IELTS General Writing tasks."
+        },
+        {
+          "id": "academic",
+          "name": "Academic",
+          "description": "IELTS Academic Writing tasks."
+        }
+      ]
+    }
+  ]
+}
