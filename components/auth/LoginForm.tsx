@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { loginUser } from "@/dal/auth/login";
+import GoogleButton from "./google";
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -53,14 +55,15 @@ export function LoginForm() {
     }
     console.log("Registration data:", { email, password });
     try {
-      const resp = await axios.post("/api/login", {
-        username: email,
-        password: password,
-      });
-      toast.success(resp.data.message, {
-        richColors: true,
-      });
-      router.refresh();
+      const user = await loginUser({ email, password });
+      if (user?.access_token) {
+        router.push("/");
+        toast.success("Logged in successfully!", { richColors: true });
+      } else {
+        toast.error("Failed to login. Please try again later.", {
+          richColors: true,
+        });
+      }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(error);
@@ -83,8 +86,11 @@ export function LoginForm() {
       exit={{ opacity: 0, x: 20 }}
       transition={{ duration: 0.3, type: "spring", stiffness: 100 }}
     >
-      <form onSubmit={handleSubmit}>
+      <form>
         <div className="space-y-4">
+                    <GoogleButton
+                     />
+          
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <div className="relative">
@@ -94,7 +100,7 @@ export function LoginForm() {
                 placeholder="name@example.com"
                 type="email"
                 className="pl-10"
-                required
+                
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -142,7 +148,7 @@ export function LoginForm() {
             )}
           </div>
           <Button
-            type="submit"
+            onClick={handleSubmit}
             className="w-full cursor-pointer"
             disabled={loading}
           >

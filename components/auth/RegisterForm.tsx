@@ -8,8 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { registerUser } from "@/dal/auth/register";
+import GoogleButton from "./google";
 
-export function RegisterForm({setActive}:{setActive: Dispatch<SetStateAction<string>>}) {
+export function RegisterForm({
+  setActive,
+}: {
+  setActive: Dispatch<SetStateAction<string>>;
+}) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -61,27 +67,28 @@ export function RegisterForm({setActive}:{setActive: Dispatch<SetStateAction<str
     setErrors({});
     console.log("Registration data:", { email, password, confirmPassword });
     try {
-    //   const resp = await apiWithoutAuth.post("/register", {
-    //     username: email,
-    //     password: password,
-    //   });
-    //   console.log(resp);
-   new Promise(resolve => setTimeout(resolve, 2000));
-      setActive("login")
-       toast.success("You regsitered Successfully! Now login", {
+      const user = await registerUser({ email, password });
+      console.log("user", user);
+      new Promise((resolve) => setTimeout(resolve, 1000));
+      setActive("login");
+      toast.success("You regsitered Successfully! Now login", {
         richColors: true,
       });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error:any) {
-      console.error(error);
-      toast.error(error.response.data.detail||"Failed to register. Please try again later.", {
-        richColors: true,
-      });
-    }
-    finally{
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log("error", error);
+      toast.error(
+        error.response?.data?.detail ||
+          String(error) ||
+          "Failed to register. Please try again later.",
+        {
+          richColors: true,
+        }
+      );
+    } finally {
       setLoading(false);
-      setErrors({})
-    };  
+      setErrors({});
+    }
   };
 
   return (
@@ -91,8 +98,9 @@ export function RegisterForm({setActive}:{setActive: Dispatch<SetStateAction<str
       exit={{ opacity: 0, x: -20 }}
       transition={{ duration: 0.3, type: "spring", stiffness: 100 }}
     >
-      <form onSubmit={handleSubmit}>
+      <form>
         <div className="space-y-4">
+          <GoogleButton />
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <div className="relative">
@@ -181,7 +189,11 @@ export function RegisterForm({setActive}:{setActive: Dispatch<SetStateAction<str
             )}
           </div>
 
-          <Button type="submit" className="w-full cursor-pointer" disabled={loading}>
+          <Button
+            className="w-full cursor-pointer"
+            disabled={loading}
+            onClick={(e) => handleSubmit(e)}
+          >
             {loading ? "Loading..." : "Create Account"}
           </Button>
         </div>
