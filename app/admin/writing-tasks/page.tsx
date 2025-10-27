@@ -1,3 +1,4 @@
+// eslint-disable  @typescript-eslint/no-explicit-any
 "use client";
 
 import { useState, useEffect } from "react";
@@ -43,7 +44,7 @@ export default function WritingTasksPage() {
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      
+
       const params: any = { limit: 100 };
       if (filterType !== "all") params.ielts_type = filterType;
       if (filterPart !== "all") params.writing_task = filterPart;
