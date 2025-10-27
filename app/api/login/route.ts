@@ -10,24 +10,22 @@ interface PythonLoginResponse {
 
 export async function POST(req: Request) {
   try {
-    const { email, password } = await req.json();
+    const formData = await req.formData();
 
-    if (!email || !password) {
+    const username = formData.get("username") as string | null;
+    const password = formData.get("password") as string | null;
+
+    if (!username || !password) {
       return NextResponse.json(
-        { error: "Email and password are required" },
+        { error: "Username and password are required" },
         { status: 400 }
       );
     }
 
-    const form = new URLSearchParams();
-    form.append("username", email);
-    form.append("password", password);
-   
-
     // Call your Python API
     const { data } = await axios.post<PythonLoginResponse>(
       "https://api.ieltskaro.com/auth/jwt/login",
-      form,
+      formData,
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

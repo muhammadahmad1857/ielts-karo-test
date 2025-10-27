@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { api } from "@/lib/axios";
 import Spinner from "@/components/Loader";
+import { handleGoogleCallback } from "@/dal";
 
 export default function CallbackPage() {
   const searchParams = useSearchParams();
@@ -14,12 +15,12 @@ export default function CallbackPage() {
     if (!code) return;
 
     const fetchToken = async () => {
-      try {
-        const res = await api.get(`/auth/google/callback?code=${code}`);
-        localStorage.setItem("access_token", res.data.access_token);
-        router.push("/dashboard");
-      } catch (err) {
-        console.error(err);
+      const res = await handleGoogleCallback({ code });
+      if (res.success) {
+        setToken("token", res.data?.access_token);
+        router.push("/admin");
+      } else {
+        console.error(res.error);
       }
     };
 

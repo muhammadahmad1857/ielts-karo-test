@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { registerUser } from "@/dal/auth/register";
 import GoogleButton from "./google";
+import { register } from "@/dal";
 
 export function RegisterForm({
   setActive,
@@ -67,11 +68,11 @@ export function RegisterForm({
     setErrors({});
     console.log("Registration data:", { email, password, confirmPassword });
     try {
-      const user = await registerUser({ email, password });
+      const user = await register({ email, password });
       console.log("user", user);
       new Promise((resolve) => setTimeout(resolve, 1000));
       setActive("login");
-      toast.success("You regsitered Successfully! Now login", {
+      toast.success("You registered Successfully! Now login", {
         richColors: true,
       });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -407,3 +407,8 @@
     transform: translateY(25px);
   }
 }
+
+
+button{
+  cursor: pointer !important;
+}

@@ -33,3 +33,25 @@ export const apiWithAuth = axios.create({
 
 //   return config;
 // });
+
+import { getToken } from "@/dal/auth/getToken"; // Adjust the import path
+
+apiWithAuth.interceptors.request.use(async (config) => {
+  console.log("Interceptor: Token fetched or not"); // Confirm token is retrieved
+
+  try {
+    // Fetch the token from your authentication service or local storage
+    const token = await getToken();
+    console.log("Interceptor: Token fetched:", token); // Confirm token is retrieved
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+      console.log(
+        "Interceptor: Authorization header set to:",
+        config.headers.Authorization
+      );
+    }
+  } catch (error) {
+    console.error("Interceptor error:", error);
+  }
+  return config;
+});

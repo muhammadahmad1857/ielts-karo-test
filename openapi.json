@@ -1,0 +1,2932 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "IELTS Karo API",
+    "description": "API for IELTS Karo application",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.ieltskaro.com",
+      "description": "Production server"
+    },
+    {
+      "url": "http://127.0.0.1:8000",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/auth/jwt/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Auth:Jwt.Login",
+        "operationId": "auth_jwt_login_auth_jwt_login_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_auth_jwt_login_auth_jwt_login_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BearerResponse"
+                },
+                "example": {
+                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiOTIyMWZmYzktNjQwZi00MzcyLTg2ZDMtY2U2NDJjYmE1NjAzIiwiYXVkIjoiZmFzdGFwaS11c2VyczphdXRoIiwiZXhwIjoxNTcxNTA0MTkzfQ.M10bjOe45I5Ncu_uXvOmVV8QxnL-nZfcH96U90JaocI",
+                  "token_type": "bearer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                },
+                "examples": {
+                  "LOGIN_BAD_CREDENTIALS": {
+                    "summary": "Bad credentials or the user is inactive.",
+                    "value": {
+                      "detail": "LOGIN_BAD_CREDENTIALS"
+                    }
+                  },
+                  "LOGIN_USER_NOT_VERIFIED": {
+                    "summary": "The user is not verified.",
+                    "value": {
+                      "detail": "LOGIN_USER_NOT_VERIFIED"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/jwt/logout": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Auth:Jwt.Logout",
+        "operationId": "auth_jwt_logout_auth_jwt_logout_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing token or inactive user."
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Register:Register",
+        "operationId": "register_register_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRead"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                },
+                "examples": {
+                  "REGISTER_USER_ALREADY_EXISTS": {
+                    "summary": "A user with this email already exists.",
+                    "value": {
+                      "detail": "REGISTER_USER_ALREADY_EXISTS"
+                    }
+                  },
+                  "REGISTER_INVALID_PASSWORD": {
+                    "summary": "Password validation failed.",
+                    "value": {
+                      "detail": {
+                        "code": "REGISTER_INVALID_PASSWORD",
+                        "reason": "Password should beat least 3 characters"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/request-verify-token": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Verify:Request-Token",
+        "operationId": "verify_request_token_auth_request_verify_token_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_verify_request_token_auth_request_verify_token_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/verify": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Verify:Verify",
+        "operationId": "verify_verify_auth_verify_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_verify_verify_auth_verify_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRead"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                },
+                "examples": {
+                  "VERIFY_USER_BAD_TOKEN": {
+                    "summary": "Bad token, not existing user ornot the e-mail currently set for the user.",
+                    "value": {
+                      "detail": "VERIFY_USER_BAD_TOKEN"
+                    }
+                  },
+                  "VERIFY_USER_ALREADY_VERIFIED": {
+                    "summary": "The user is already verified.",
+                    "value": {
+                      "detail": "VERIFY_USER_ALREADY_VERIFIED"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Reset:Forgot Password",
+        "operationId": "reset_forgot_password_auth_forgot_password_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_reset_forgot_password_auth_forgot_password_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Reset:Reset Password",
+        "operationId": "reset_reset_password_auth_reset_password_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_reset_reset_password_auth_reset_password_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                },
+                "examples": {
+                  "RESET_PASSWORD_BAD_TOKEN": {
+                    "summary": "Bad or expired token.",
+                    "value": {
+                      "detail": "RESET_PASSWORD_BAD_TOKEN"
+                    }
+                  },
+                  "RESET_PASSWORD_INVALID_PASSWORD": {
+                    "summary": "Password validation failed.",
+                    "value": {
+                      "detail": {
+                        "code": "RESET_PASSWORD_INVALID_PASSWORD",
+                        "reason": "Password should be at least 3 characters"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/google/authorize": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Oauth:Google.Jwt.Authorize",
+        "operationId": "oauth_google_jwt_authorize_auth_google_authorize_get",
+        "parameters": [
+          {
+            "name": "scopes",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Scopes"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuth2AuthorizeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/google/callback": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Oauth:Google.Jwt.Callback",
+        "description": "The response varies based on the authentication backend used.",
+        "operationId": "oauth_google_jwt_callback_auth_google_callback_get",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code"
+            }
+          },
+          {
+            "name": "code_verifier",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Verifier"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "State"
+            }
+          },
+          {
+            "name": "error",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Error"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "INVALID_STATE_TOKEN": {
+                    "summary": "Invalid state token."
+                  },
+                  "LOGIN_BAD_CREDENTIALS": {
+                    "summary": "User is inactive.",
+                    "value": {
+                      "detail": "LOGIN_BAD_CREDENTIALS"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Users:Current User",
+        "operationId": "users_current_user_users_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing token or inactive user."
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Users:Patch Current User",
+        "operationId": "users_patch_current_user_users_me_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing token or inactive user."
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                },
+                "examples": {
+                  "UPDATE_USER_EMAIL_ALREADY_EXISTS": {
+                    "summary": "A user with this email already exists.",
+                    "value": {
+                      "detail": "UPDATE_USER_EMAIL_ALREADY_EXISTS"
+                    }
+                  },
+                  "UPDATE_USER_INVALID_PASSWORD": {
+                    "summary": "Password validation failed.",
+                    "value": {
+                      "detail": {
+                        "code": "UPDATE_USER_INVALID_PASSWORD",
+                        "reason": "Password should beat least 3 characters"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Users:User",
+        "operationId": "users_user_users__id__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing token or inactive user."
+          },
+          "403": {
+            "description": "Not a superuser."
+          },
+          "404": {
+            "description": "The user does not exist."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Users:Patch User",
+        "operationId": "users_patch_user_users__id__patch",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing token or inactive user."
+          },
+          "403": {
+            "description": "Not a superuser."
+          },
+          "404": {
+            "description": "The user does not exist."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UPDATE_USER_EMAIL_ALREADY_EXISTS": {
+                    "summary": "A user with this email already exists.",
+                    "value": {
+                      "detail": "UPDATE_USER_EMAIL_ALREADY_EXISTS"
+                    }
+                  },
+                  "UPDATE_USER_INVALID_PASSWORD": {
+                    "summary": "Password validation failed.",
+                    "value": {
+                      "detail": {
+                        "code": "UPDATE_USER_INVALID_PASSWORD",
+                        "reason": "Password should beat least 3 characters"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Users:Delete User",
+        "operationId": "users_delete_user_users__id__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Missing token or inactive user."
+          },
+          "403": {
+            "description": "Not a superuser."
+          },
+          "404": {
+            "description": "The user does not exist."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/writing-tasks/": {
+      "post": {
+        "tags": [
+          "writing-tasks"
+        ],
+        "summary": "Create a new writing task",
+        "description": "Create a new IELTS writing task.\n\n**Requires super admin role.**\n\nPrevents duplicate tasks based on:\n- IELTS type\n- Writing task part\n- Question text\n- Cambridge book details (if provided)",
+        "operationId": "create_writing_task_writing_tasks__post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WritingTaskCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WritingTaskResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "writing-tasks"
+        ],
+        "summary": "List all writing tasks",
+        "description": "List all IELTS writing tasks with optional filters.\n\nRequires authentication.\n\nFilters:\n- ielts_type: Filter by Academic or General Training\n- writing_task: Filter by Part 1 or Part 2\n- book_number: Filter by Cambridge IELTS book number\n- is_active: Show only active tasks (default: True)\n- skip: Pagination offset\n- limit: Maximum number of results (max 100)",
+        "operationId": "list_writing_tasks_writing_tasks__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "ielts_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IELTSType"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by IELTS type",
+              "title": "Ielts Type"
+            },
+            "description": "Filter by IELTS type"
+          },
+          {
+            "name": "writing_task",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/WritingTaskPart"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by writing task part",
+              "title": "Writing Task"
+            },
+            "description": "Filter by writing task part"
+          },
+          {
+            "name": "book_number",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by Cambridge book number",
+              "title": "Book Number"
+            },
+            "description": "Filter by Cambridge book number"
+          },
+          {
+            "name": "is_active",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Filter by active status",
+              "default": true,
+              "title": "Is Active"
+            },
+            "description": "Filter by active status"
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of records to skip",
+              "default": 0,
+              "title": "Skip"
+            },
+            "description": "Number of records to skip"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Number of records to return",
+              "default": 100,
+              "title": "Limit"
+            },
+            "description": "Number of records to return"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WritingTaskResponse"
+                  },
+                  "title": "Response List Writing Tasks Writing Tasks  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/writing-tasks/{task_id}": {
+      "get": {
+        "tags": [
+          "writing-tasks"
+        ],
+        "summary": "Get a specific writing task",
+        "description": "Get a specific IELTS writing task by ID.\n\nRequires authentication.",
+        "operationId": "get_writing_task_writing_tasks__task_id__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PydanticObjectId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WritingTaskResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "writing-tasks"
+        ],
+        "summary": "Update a writing task",
+        "description": "Update an existing IELTS writing task.\n\n**Requires super admin role.**\n\nOnly provided fields will be updated.\nPrevents creating duplicates during update.",
+        "operationId": "update_writing_task_writing_tasks__task_id__put",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PydanticObjectId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WritingTaskUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WritingTaskResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "writing-tasks"
+        ],
+        "summary": "Delete a writing task (soft delete)",
+        "description": "Soft delete an IELTS writing task.\n\n**Requires super admin role.**\n\nThe task will be marked as inactive instead of being permanently deleted.",
+        "operationId": "delete_writing_task_writing_tasks__task_id__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PydanticObjectId"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/writing-tasks/{task_id}/restore": {
+      "post": {
+        "tags": [
+          "writing-tasks"
+        ],
+        "summary": "Restore a deleted writing task",
+        "description": "Restore a soft-deleted IELTS writing task.\n\n**Requires super admin role.**",
+        "operationId": "restore_writing_task_writing_tasks__task_id__restore_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PydanticObjectId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WritingTaskResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/writing-tasks/by-book/{book_number}": {
+      "get": {
+        "tags": [
+          "writing-tasks"
+        ],
+        "summary": "Get tasks from a specific Cambridge book",
+        "description": "Get all tasks from a specific Cambridge IELTS book.\n\nRequires authentication.\n\nParameters:\n- book_number: Cambridge IELTS book number (e.g., 17)\n- test_number: Optional specific test number (1-4)",
+        "operationId": "get_tasks_by_book_writing_tasks_by_book__book_number__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "book_number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Book Number"
+            }
+          },
+          {
+            "name": "test_number",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Specific test number (1-4)",
+              "title": "Test Number"
+            },
+            "description": "Specific test number (1-4)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WritingTaskResponse"
+                  },
+                  "title": "Response Get Tasks By Book Writing Tasks By Book  Book Number  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/writing-tasks/filter/by-type-and-part": {
+      "get": {
+        "tags": [
+          "writing-tasks"
+        ],
+        "summary": "Get tasks by IELTS type and part",
+        "description": "Get all active tasks filtered by IELTS type and writing task part.\n\nRequires authentication.",
+        "operationId": "get_tasks_by_type_and_part_writing_tasks_filter_by_type_and_part_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "ielts_type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/IELTSType",
+              "description": "IELTS type (academic/general_training)"
+            },
+            "description": "IELTS type (academic/general_training)"
+          },
+          {
+            "name": "writing_task",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/WritingTaskPart",
+              "description": "Writing task part (part_1/part_2)"
+            },
+            "description": "Writing task part (part_1/part_2)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WritingTaskResponse"
+                  },
+                  "title": "Response Get Tasks By Type And Part Writing Tasks Filter By Type And Part Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/writing-tasks/stats/summary": {
+      "get": {
+        "tags": [
+          "writing-tasks"
+        ],
+        "summary": "Get statistics about writing tasks",
+        "description": "Get summary statistics about writing tasks in the database.\n\nRequires authentication.",
+        "operationId": "get_task_statistics_writing_tasks_stats_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Task Statistics Writing Tasks Stats Summary Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/media/upload": {
+      "post": {
+        "tags": [
+          "media"
+        ],
+        "summary": "Upload a media file",
+        "description": "Upload a media file to Google Cloud Storage.\n\n**Requires authentication.**\n\n- Accepts images (JPEG, PNG, GIF, WebP) and PDFs\n- Maximum file size: 10 MB\n- Returns the uploaded file metadata and public URL",
+        "operationId": "upload_media_media_upload_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_media_media_upload_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaUploadResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/media/upload/audio": {
+      "post": {
+        "tags": [
+          "media"
+        ],
+        "summary": "Upload an audio file",
+        "description": "Upload an audio file to Google Cloud Storage.\n\n**Requires authentication.**\n\n- Accepts audio files (MP3, WAV, OGG, WebM, AAC, M4A)\n- Maximum file size: 50 MB\n- Returns the uploaded file metadata and public URL",
+        "operationId": "upload_audio_media_upload_audio_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_audio_media_upload_audio_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaUploadResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/media/": {
+      "get": {
+        "tags": [
+          "media"
+        ],
+        "summary": "Get all media files for current user and super admins can access all files",
+        "description": "Get all media files uploaded by the current user.\n\n**Super admins** can see all files.\n**Regular users** can only see their own files.\n\n**Requires authentication.**\n\nReturns a paginated list of media files.",
+        "operationId": "get_user_media_media__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of records to skip",
+              "default": 0,
+              "title": "Skip"
+            },
+            "description": "Number of records to skip"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum number of records to return",
+              "default": 100,
+              "title": "Limit"
+            },
+            "description": "Maximum number of records to return"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MediaResponse"
+                  },
+                  "title": "Response Get User Media Media  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/media/stats": {
+      "get": {
+        "tags": [
+          "media"
+        ],
+        "summary": "Get media statistics",
+        "description": "Get comprehensive statistics about media files.\n\n**Requires authentication.**\n\n**Super admins** can see stats for all files.\n**Regular users** can only see stats for their own files.",
+        "operationId": "get_media_stats_media_stats_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaStatsResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/media/{media_id}": {
+      "get": {
+        "tags": [
+          "media"
+        ],
+        "summary": "Get a specific media file by current user and super admins can access any file",
+        "description": "Get details of a specific media file by ID.\n\n**Requires authentication.**\n\n**Super admins** can access any file.\n**Regular users** can only access their own media files.",
+        "operationId": "get_media_by_id_media__media_id__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "media_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PydanticObjectId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "media"
+        ],
+        "summary": "Delete a media by ID",
+        "description": "Delete a media file by ID.\n\n**Requires authentication.**\n\n- Deletes the file from Google Cloud Storage\n- Removes the database record\n\n**Super admins** can delete any file.\n**Regular users** can only delete their own media files.",
+        "operationId": "delete_media_media__media_id__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "media_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PydanticObjectId"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/media/{media_id}/url": {
+      "get": {
+        "tags": [
+          "media"
+        ],
+        "summary": "Get public URL for a media file",
+        "description": "Get the public URL for a media file.\n\n**Requires authentication.**\n\n**Super admins** can access URLs for any file.\n**Regular users** can only access URLs for their own media files.",
+        "operationId": "get_media_url_media__media_id__url_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "media_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PydanticObjectId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/users/{user_id}/role": {
+      "patch": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Update User Role",
+        "description": "Update a user's role (upgrade or downgrade).\n\nOnly super admins can perform this action.\n\nArgs:\n    user_id: The ID of the user whose role should be updated\n    role_update: The new role for the user\n    current_user: The currently authenticated super admin\n    user_db: Database connection for user operations\n\nReturns:\n    The updated user object\n\nRaises:\n    404: If user not found\n    403: If trying to modify own role or not a super admin\n    400: If trying to demote the last super admin",
+        "operationId": "update_user_role_admin_users__user_id__role_patch",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PydanticObjectId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRoleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/users/{user_id}": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Get User By Id",
+        "description": "Get a specific user by ID.\n\nOnly super admins can access this endpoint.\n\nArgs:\n    user_id: The ID of the user to retrieve\n    current_user: The currently authenticated super admin\n    user_db: Database connection for user operations\n\nReturns:\n    The user object\n\nRaises:\n    404: If user not found",
+        "operationId": "get_user_by_id_admin_users__user_id__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PydanticObjectId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "List All Users",
+        "description": "List all users in the system.\n\nOnly super admins can access this endpoint.\n\nArgs:\n    skip: Number of users to skip (for pagination)\n    limit: Maximum number of users to return\n    role: Optional filter by role\n    current_user: The currently authenticated super admin\n\nReturns:\n    List of users",
+        "operationId": "list_all_users_admin_users_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "student",
+                    "super_admin"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Role"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserRead"
+                  },
+                  "title": "Response List All Users Admin Users Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/protected-route": {
+      "get": {
+        "summary": "Protected Route",
+        "description": "An example of a protected route that requires an active, logged-in user.",
+        "operationId": "protected_route_protected_route_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Home",
+        "description": "Loads homepage.",
+        "operationId": "home__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BearerResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "token_type"
+        ],
+        "title": "BearerResponse"
+      },
+      "Body_auth_jwt_login_auth_jwt_login_post": {
+        "properties": {
+          "grant_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^password$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grant Type"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "title": "Password"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope",
+            "default": ""
+          },
+          "client_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Id"
+          },
+          "client_secret": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "format": "password",
+            "title": "Client Secret"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "Body_auth_jwt_login_auth_jwt_login_post"
+      },
+      "Body_reset_forgot_password_auth_forgot_password_post": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "title": "Body_reset_forgot_password_auth_forgot_password_post"
+      },
+      "Body_reset_reset_password_auth_reset_password_post": {
+        "properties": {
+          "token": {
+            "type": "string",
+            "title": "Token"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "token",
+          "password"
+        ],
+        "title": "Body_reset_reset_password_auth_reset_password_post"
+      },
+      "Body_upload_audio_media_upload_audio_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_audio_media_upload_audio_post"
+      },
+      "Body_upload_media_media_upload_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_media_media_upload_post"
+      },
+      "Body_verify_request_token_auth_request_verify_token_post": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "title": "Body_verify_request_token_auth_request_verify_token_post"
+      },
+      "Body_verify_verify_auth_verify_post": {
+        "properties": {
+          "token": {
+            "type": "string",
+            "title": "Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "token"
+        ],
+        "title": "Body_verify_verify_auth_verify_post"
+      },
+      "ErrorModel": {
+        "properties": {
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              }
+            ],
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "detail"
+        ],
+        "title": "ErrorModel"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "IELTSTestBook": {
+        "properties": {
+          "book_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Book Name",
+            "description": "Name of the IELTS book (e.g., Cambridge IELTS 17)"
+          },
+          "book_number": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Book Number",
+            "description": "Cambridge IELTS book number (e.g., 1, 2, 3, etc.)"
+          },
+          "test_number": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Test Number",
+            "description": "Test number within the book (1 to 4)"
+          }
+        },
+        "type": "object",
+        "title": "IELTSTestBook",
+        "description": "IELTS test book reference information.\nThis is optional and used to track which official IELTS book\nthe question comes from.",
+        "example": {
+          "book_name": "Cambridge IELTS 17",
+          "book_number": 17,
+          "test_number": 1
+        }
+      },
+      "IELTSType": {
+        "type": "string",
+        "enum": [
+          "academic",
+          "general_training"
+        ],
+        "title": "IELTSType",
+        "description": "IELTS test type enumeration"
+      },
+      "MediaResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the media file"
+          },
+          "owner_id": {
+            "type": "string",
+            "description": "ID of the user who uploaded the file"
+          },
+          "key": {
+            "type": "string",
+            "title": "Key",
+            "description": "The unique path/key of the file in the GCS bucket"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename",
+            "description": "The original name of the file"
+          },
+          "mime_type": {
+            "type": "string",
+            "title": "Mime Type",
+            "description": "The content type of the file"
+          },
+          "size_mb": {
+            "type": "number",
+            "title": "Size Mb",
+            "description": "The size of the file in megabytes (MB)"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "uploaded",
+              "failed"
+            ],
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "owner_id",
+          "key",
+          "filename",
+          "mime_type",
+          "size_mb",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "MediaResponse",
+        "description": "Schema for reading/returning media information",
+        "example": {
+          "created_at": "2025-10-17T10:30:00Z",
+          "filename": "chart.jpg",
+          "id": "507f1f77bcf86cd799439011",
+          "key": "writing-tasks/question-images/2025/10/image123.jpg",
+          "mime_type": "image/jpeg",
+          "owner_id": "507f1f77bcf86cd799439012",
+          "size_mb": 0.23,
+          "status": "uploaded",
+          "updated_at": "2025-10-17T10:30:00Z"
+        }
+      },
+      "MediaStatsResponse": {
+        "properties": {
+          "total_files": {
+            "type": "integer",
+            "title": "Total Files",
+            "description": "Total number of media files"
+          },
+          "total_size_mb": {
+            "type": "number",
+            "title": "Total Size Mb",
+            "description": "Total size of all files in MB"
+          },
+          "total_size_gb": {
+            "type": "number",
+            "title": "Total Size Gb",
+            "description": "Total size of all files in GB"
+          },
+          "files_by_status": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Files By Status",
+            "description": "Count of files by status"
+          },
+          "files_by_mime_type": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Files By Mime Type",
+            "description": "Count of files by MIME type"
+          },
+          "average_file_size_mb": {
+            "type": "number",
+            "title": "Average File Size Mb",
+            "description": "Average file size in MB"
+          },
+          "largest_file_mb": {
+            "type": "number",
+            "title": "Largest File Mb",
+            "description": "Size of largest file in MB"
+          },
+          "smallest_file_mb": {
+            "type": "number",
+            "title": "Smallest File Mb",
+            "description": "Size of smallest file in MB"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_files",
+          "total_size_mb",
+          "total_size_gb",
+          "files_by_status",
+          "files_by_mime_type",
+          "average_file_size_mb",
+          "largest_file_mb",
+          "smallest_file_mb"
+        ],
+        "title": "MediaStatsResponse",
+        "description": "Response for media statistics",
+        "example": {
+          "average_file_size_mb": 8.34,
+          "files_by_mime_type": {
+            "application/pdf": 20,
+            "audio/mpeg": 5,
+            "image/jpeg": 85,
+            "image/png": 40
+          },
+          "files_by_status": {
+            "failed": 2,
+            "pending": 3,
+            "uploaded": 145
+          },
+          "largest_file_mb": 45.2,
+          "smallest_file_mb": 0.1,
+          "total_files": 150,
+          "total_size_gb": 1.22,
+          "total_size_mb": 1250.75
+        }
+      },
+      "MediaUploadResponse": {
+        "properties": {
+          "media": {
+            "$ref": "#/components/schemas/MediaResponse"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url",
+            "description": "Public URL to access the uploaded file"
+          }
+        },
+        "type": "object",
+        "required": [
+          "media",
+          "url"
+        ],
+        "title": "MediaUploadResponse",
+        "description": "Response after successfully uploading a file",
+        "example": {
+          "media": {
+            "created_at": "2025-10-17T10:30:00Z",
+            "filename": "chart.jpg",
+            "id": "507f1f77bcf86cd799439011",
+            "key": "writing-tasks/question-images/2025/10/image123.jpg",
+            "mime_type": "image/jpeg",
+            "owner_id": "507f1f77bcf86cd799439012",
+            "size_mb": 0.23,
+            "status": "uploaded",
+            "updated_at": "2025-10-17T10:30:00Z"
+          },
+          "url": "https://storage.googleapis.com/your-bucket/writing-tasks/question-images/2025/10/image123.jpg"
+        }
+      },
+      "OAuth2AuthorizeResponse": {
+        "properties": {
+          "authorization_url": {
+            "type": "string",
+            "title": "Authorization Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "authorization_url"
+        ],
+        "title": "OAuth2AuthorizeResponse"
+      },
+      "PydanticObjectId": {
+        "type": "string",
+        "maxLength": 24,
+        "minLength": 24,
+        "pattern": "^[0-9a-f]{24}$",
+        "example": "5eb7cf5a86d9755df3a6c593"
+      },
+      "UpdateRoleRequest": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "student",
+              "super_admin"
+            ],
+            "title": "Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "role"
+        ],
+        "title": "UpdateRoleRequest",
+        "description": "Schema for updating a user's role."
+      },
+      "UserCreate": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active",
+            "default": true
+          },
+          "is_superuser": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Superuser",
+            "default": false
+          },
+          "is_verified": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Verified",
+            "default": false
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "student",
+              "super_admin"
+            ],
+            "title": "Role",
+            "default": "student"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "UserCreate",
+        "description": "Schema for creating a new user. This is what the API expects\nin the request body for the registration endpoint. Inherits\n'email' and 'password' fields."
+      },
+      "UserRead": {
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/PydanticObjectId"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "is_superuser": {
+            "type": "boolean",
+            "title": "Is Superuser",
+            "default": false
+          },
+          "is_verified": {
+            "type": "boolean",
+            "title": "Is Verified",
+            "default": false
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "student",
+              "super_admin"
+            ],
+            "title": "Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "role"
+        ],
+        "title": "UserRead",
+        "description": "Schema for reading user data. This is what the API will return\nwhen we fetch user information. Inherits standard fields from\nfastapi-users' BaseUser and specifies the ID type."
+      },
+      "UserUpdate": {
+        "properties": {
+          "password": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Password"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "email"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active"
+          },
+          "is_superuser": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Superuser"
+          },
+          "is_verified": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Verified"
+          }
+        },
+        "type": "object",
+        "title": "UserUpdate",
+        "description": "Schema for updating a user's data. This is what the API expects\nin the request body for the user update endpoint. Inherits\nan optional 'password' field."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "WritingTaskCreate": {
+        "properties": {
+          "ielts_type": {
+            "$ref": "#/components/schemas/IELTSType",
+            "description": "Type of IELTS test: Academic or General Training"
+          },
+          "writing_task": {
+            "$ref": "#/components/schemas/WritingTaskPart",
+            "description": "Writing task part: Part 1 or Part 2"
+          },
+          "ielts_test_book": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IELTSTestBook"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Reference to IELTS book and test number (optional)"
+          },
+          "question": {
+            "type": "string",
+            "minLength": 10,
+            "title": "Question",
+            "description": "The writing task question text"
+          },
+          "question_image_id": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PydanticObjectId"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "ID of the uploaded question image in Media collection"
+          },
+          "question_image_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question Image Url",
+            "description": "URL to the question image (optional, useful for Task 1 graphs/charts)"
+          },
+          "model_answer": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Answer",
+            "description": "Model answer for the writing task (optional)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "ielts_type",
+          "writing_task",
+          "question"
+        ],
+        "title": "WritingTaskCreate",
+        "description": "Schema for creating a new writing task",
+        "example": {
+          "ielts_test_book": {
+            "book_name": "Cambridge IELTS 17",
+            "book_number": 17,
+            "test_number": 1
+          },
+          "ielts_type": "academic",
+          "model_answer": "The bar chart illustrates the proportion of households...",
+          "question": "The chart below shows the percentage of households in owned and rented accommodation in England and Wales between 1918 and 2011. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.",
+          "question_image_url": "https://example.com/images/chart123.png",
+          "writing_task": "part_1"
+        }
+      },
+      "WritingTaskPart": {
+        "type": "string",
+        "enum": [
+          "part_1",
+          "part_2"
+        ],
+        "title": "WritingTaskPart",
+        "description": "Writing task part enumeration"
+      },
+      "WritingTaskResponse": {
+        "properties": {
+          "ielts_type": {
+            "$ref": "#/components/schemas/IELTSType",
+            "description": "Type of IELTS test: Academic or General Training"
+          },
+          "writing_task": {
+            "$ref": "#/components/schemas/WritingTaskPart",
+            "description": "Writing task part: Part 1 or Part 2"
+          },
+          "ielts_test_book": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IELTSTestBook"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Reference to IELTS book and test number (optional)"
+          },
+          "question": {
+            "type": "string",
+            "minLength": 10,
+            "title": "Question",
+            "description": "The writing task question text"
+          },
+          "question_image_id": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PydanticObjectId"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "ID of the uploaded question image in Media collection"
+          },
+          "question_image_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question Image Url",
+            "description": "URL to the question image (optional, useful for Task 1 graphs/charts)"
+          },
+          "model_answer": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Answer",
+            "description": "Model answer for the writing task (optional)"
+          },
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the writing task"
+          }
+        },
+        "type": "object",
+        "required": [
+          "ielts_type",
+          "writing_task",
+          "question",
+          "id"
+        ],
+        "title": "WritingTaskResponse",
+        "description": "Schema for reading/returning a writing task with ID",
+        "example": {
+          "id": "507f1f77bcf86cd799439011",
+          "ielts_test_book": {
+            "book_name": "Cambridge IELTS 17",
+            "book_number": 17,
+            "test_number": 1
+          },
+          "ielts_type": "academic",
+          "model_answer": "The bar chart illustrates the proportion of households...",
+          "question": "The chart below shows the percentage of households in owned and rented accommodation in England and Wales between 1918 and 2011.",
+          "question_image_url": "https://example.com/images/chart123.png",
+          "writing_task": "part_1"
+        }
+      },
+      "WritingTaskUpdate": {
+        "properties": {
+          "ielts_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IELTSType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "writing_task": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WritingTaskPart"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ielts_test_book": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IELTSTestBook"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "question": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 10
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question"
+          },
+          "question_image_id": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PydanticObjectId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "question_image_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question Image Url"
+          },
+          "model_answer": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Answer"
+          }
+        },
+        "type": "object",
+        "title": "WritingTaskUpdate",
+        "description": "Schema for updating an existing writing task (all fields optional)"
+      }
+    },
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": {
+          "password": {
+            "scopes": {
+
+            },
+            "tokenUrl": "auth/jwt/login"
+          }
+        }
+      }
+    }
+  }
+}

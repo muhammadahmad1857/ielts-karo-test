@@ -1,3 +1,8 @@
+/**
+ * @deprecated This file is deprecated. Use `dal/auth/auth.ts` instead.
+ * See `dal/MIGRATION.md` for migration guide.
+ */
+
 // "use server";
 
 import { api } from "@/lib/axios";

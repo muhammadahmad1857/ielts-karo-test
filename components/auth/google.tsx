@@ -3,6 +3,8 @@ import React from "react";
 import { useState } from "react";
 import axios from "axios";
 import { api } from "@/lib/axios";
+import { getGoogleAuthUrl } from "@/dal";
+import { toast } from "sonner";
 
 const GoogleLoader = () => {
   return (
@@ -22,9 +24,13 @@ const GoogleButton = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await api.get("/auth/google/authorize");
-      console.log("Google OAuth URL:", res.data.authorization_url);
-      window.location.href = res.data.authorization_url;
+      const res = await getGoogleAuthUrl();
+      if (res.data?.authorization_url) {
+        console.log("Google OAuth URL:", res.data?.authorization_url);
+        window.location.href = res.data?.authorization_url;
+      } else {
+        toast.error("Failed to get Google auth URL", { richColors: true });
+      }
     } catch (err) {
       console.error(err);
       setLoading(false);

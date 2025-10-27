@@ -12,6 +12,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { loginUser } from "@/dal/auth/login";
 import GoogleButton from "./google";
+import { login } from "@/dal";
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,8 +37,8 @@ export function LoginForm() {
 
     if (!password) {
       errors.password = "Password is required.";
-    } else if (password.length < 6) {
-      errors.password = "Password must be at least 6 characters.";
+    } else if (password.length < 5) {
+      errors.password = "Password must be at least 5 characters.";
     }
 
     return errors;
@@ -55,8 +56,8 @@ export function LoginForm() {
     }
     console.log("Registration data:", { email, password });
     try {
-      const user = await loginUser({ email, password });
-      if (user?.access_token) {
+      const user = await login({ username: email, password });
+      if (user?.data?.access_token) {
         router.push("/");
         toast.success("Logged in successfully!", { richColors: true });
       } else {
@@ -69,6 +70,7 @@ export function LoginForm() {
       console.error(error);
       toast.error(
         error.response.data.detail ||
+          error.response.error ||
           "Failed to login. Please try again later.",
         {
           richColors: true,
@@ -88,9 +90,8 @@ export function LoginForm() {
     >
       <form>
         <div className="space-y-4">
-                    <GoogleButton
-                     />
-          
+          <GoogleButton />
+
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <div className="relative">
@@ -100,7 +101,6 @@ export function LoginForm() {
                 placeholder="name@example.com"
                 type="email"
                 className="pl-10"
-                
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
