@@ -3,8 +3,7 @@
  * See `dal/MIGRATION.md` for migration guide.
  */
 
-// "use server";
-
+// eslint-disable  @typescript-eslint/no-explicit-any
 import { api } from "@/lib/axios";
 
 interface RegisterInput {

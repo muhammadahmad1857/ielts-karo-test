@@ -3,6 +3,8 @@
  * Handles administrative API calls (super admin only)
  */
 
+// eslint-disable @typescript-eslint/no-explicit-any
+
 import { apiWithAuth } from "@/lib/axios";
 import type {
   ApiResponse,

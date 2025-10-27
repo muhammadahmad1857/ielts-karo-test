@@ -2,7 +2,7 @@
  * Writing Tasks Data Access Layer
  * Handles IELTS writing task API calls
  */
-
+// eslint-disable @typescript-eslint/no-explicit-any
 import { apiWithAuth } from "@/lib/axios";
 import type {
   ApiResponse,

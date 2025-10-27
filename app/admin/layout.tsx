@@ -35,7 +35,7 @@ export default function AdminLayout({
 
         // Check if user is super admin
         const superAdminStatus = user.data.role === "super_admin";
-        console.log(superAdminStatus)
+        console.log(superAdminStatus);
         setIsSuperAdmin(superAdminStatus);
         setLoading(false);
       } catch (error) {
@@ -80,7 +80,9 @@ export default function AdminLayout({
   return (
     <div className="flex h-screen">
       <AdminSidebar />
-      <main className="flex-1 overflow-auto bg-background">{children}</main>
+      <main className="flex-1 overflow-auto bg-background lg:pt-0 pt-16">
+        {children}
+      </main>
     </div>
   );
 }

@@ -43,6 +43,7 @@ export default function WritingTasksPage() {
   const fetchTasks = async () => {
     setLoading(true);
     try {
+      
       const params: any = { limit: 100 };
       if (filterType !== "all") params.ielts_type = filterType;
       if (filterPart !== "all") params.writing_task = filterPart;

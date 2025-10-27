@@ -26,6 +26,7 @@ export function LogoutButton({
       }
 
       // optional: redirect or show message
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error("Logout failed", err);
       toast.error(err?.response?.error || "Unknown error when logging out");

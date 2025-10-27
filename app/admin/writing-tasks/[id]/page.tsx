@@ -143,6 +143,7 @@ export default function EditWritingTaskPage() {
               <label className="text-sm font-medium">IELTS Type *</label>
               <Select
                 value={task.ielts_type}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onValueChange={(value: any) =>
                   setTask({ ...task, ielts_type: value })
                 }
@@ -161,6 +162,7 @@ export default function EditWritingTaskPage() {
               <label className="text-sm font-medium">Writing Part *</label>
               <Select
                 value={task.writing_task}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onValueChange={(value: any) =>
                   setTask({ ...task, writing_task: value })
                 }

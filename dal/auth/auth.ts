@@ -2,7 +2,7 @@
  * Authentication Data Access Layer
  * Handles all authentication-related API calls
  */
-
+// eslint-disable @typescript-eslint/no-explicit-any
 import { api, apiWithAuth } from "@/lib/axios";
 import type {
   ApiResponse,
@@ -129,8 +129,6 @@ export async function register(
   }
 }
 
-
-
 /**
  * Get Google OAuth authorization URL
  *
@@ -203,7 +201,6 @@ export async function handleGoogleCallback(params: {
   }
 }
 
-
 // /**
 //  * Request email verification token
 //  *
@@ -263,7 +260,6 @@ export async function handleGoogleCallback(params: {
 //     };
 //   }
 // }
-
 
 // /**
 //  * Request password reset token

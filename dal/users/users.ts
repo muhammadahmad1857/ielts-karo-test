@@ -2,6 +2,7 @@
  * Users Data Access Layer
  * Handles user profile and management API calls
  */
+// eslint-disable @typescript-eslint/no-explicit-any
 
 import { apiWithAuth } from "@/lib/axios";
 import type { ApiResponse, User, UserUpdate, ObjectId } from "@/types";

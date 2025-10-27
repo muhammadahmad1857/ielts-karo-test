@@ -5,6 +5,7 @@ import { Upload, X } from "lucide-react";
 import { deleteMedia, uploadMedia } from "@/dal";
 
 interface ImageUploadProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onUpload?: (url: string, metadata: any) => void;
   accept?: string;
   maxSize?: number;

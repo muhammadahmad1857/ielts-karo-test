@@ -37,6 +37,7 @@ export default function UsersPage() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const params: any = { limit: 100 };
       if (filterRole !== "all") params.role = filterRole;
 
@@ -160,6 +161,7 @@ export default function UsersPage() {
 
             <Select
               value={filterRole}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onValueChange={(value: any) => setFilterRole(value)}
             >
               <SelectTrigger>
@@ -218,6 +220,7 @@ export default function UsersPage() {
                       <td className="py-3 px-4">
                         <Select
                           value={user.role}
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
                           onValueChange={(value: any) =>
                             handleRoleChange(user.id, value)
                           }

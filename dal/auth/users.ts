@@ -1,6 +1,6 @@
 import { apiWithAuth } from "@/lib/axios";
 import type { AxiosResponse } from "axios";
-
+// eslint-disable @typescript-eslint/no-explicit-any
 export type UserRole = "student" | "super_admin";
 
 export interface UserItem {
@@ -74,7 +74,7 @@ export async function updateUserRole(
 export async function isSuperAdmin(): Promise<boolean> {
   try {
     const response = await apiWithAuth.get<UserItem>("/users/me");
-    console.log("Response",response)
+    console.log("Response", response);
     return response.data.role === "super_admin";
   } catch (err: any) {
     console.error("Failed to check super admin status:", err);

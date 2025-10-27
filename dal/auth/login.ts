@@ -2,7 +2,7 @@
  * @deprecated This file is deprecated. Use `dal/auth/auth.ts` instead.
  * See `dal/MIGRATION.md` for migration guide.
  */
-
+// eslint-disable @typescript-eslint/no-explicit-any
 import axios from "axios";
 
 interface LoginInput {

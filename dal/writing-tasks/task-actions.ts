@@ -2,6 +2,7 @@
  * @deprecated This file is deprecated. Use `dal/writing-tasks/writing-tasks.ts` instead.
  * See `dal/MIGRATION.md` for migration guide.
  */
+// eslint-disable @typescript-eslint/no-explicit-any
 
 import { apiWithAuth } from "@/lib/axios";
 

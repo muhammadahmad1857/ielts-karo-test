@@ -2,7 +2,7 @@
  * @deprecated This file is deprecated. Use `dal/media/media.ts` instead.
  * See `dal/MIGRATION.md` for migration guide.
  */
-
+// eslint-disable @typescript-eslint/no-explicit-any
 import { apiWithAuth } from "@/lib/axios";
 import axios from "axios";
 
