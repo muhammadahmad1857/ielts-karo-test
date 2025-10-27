@@ -44,7 +44,7 @@ export default function WritingTasksPage() {
   const fetchTasks = async () => {
     setLoading(true);
     try {
-
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const params: any = { limit: 100 };
       if (filterType !== "all") params.ielts_type = filterType;
       if (filterPart !== "all") params.writing_task = filterPart;
@@ -160,6 +160,7 @@ export default function WritingTasksPage() {
             {/* IELTS Type */}
             <Select
               value={filterType}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onValueChange={(v) => setFilterType(v as any)}
             >
               <SelectTrigger>
@@ -177,6 +178,7 @@ export default function WritingTasksPage() {
             {/* Writing Part */}
             <Select
               value={filterPart}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onValueChange={(v) => setFilterPart(v as any)}
             >
               <SelectTrigger>
