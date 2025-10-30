@@ -1,4 +1,3 @@
-// eslint-disable @typescript-eslint/no-explicit-any
 "use client";
 
 import Link from "next/link";
@@ -49,9 +48,9 @@ export function AdminSidebar() {
       <nav className="flex-1 p-4 space-y-2">
         {navItems.map((item) => {
           const Icon = item.icon;
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const hasSubItems =
-            (item as any).subItems && (item as any).subItems.length > 0;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+             (item as any).subItems && (item as any).subItems.length > 0;
           const isMenuExpanded = expandedMenu === item.href;
           const isActive = pathname === item.href;
           if (hasSubItems) {
