@@ -38,7 +38,7 @@ export default function AdminDashboard() {
         // Fetch data from DAL
         const [taskStats, tasks, media] = await Promise.all([
           getWritingTaskStats(),
-          listWritingTasks({ limit: 5, is_active: true }),
+          listWritingTasks(),
           // Add user and media fetching here
           getMediaStats(),
         ]);
@@ -46,7 +46,7 @@ export default function AdminDashboard() {
         // Update stats
         setStats({
           total_tasks: taskStats?.data?.total_tasks || 0,
-          active_tasks: taskStats?.data?.total_tasks || 0,
+          active_tasks: taskStats?.data?.active_tasks || 0,
           total_media: media?.data?.total_files || 0,
           total_users: 0, // placeholder if you add user stats later
           tasks_by_type: taskStats?.data?.tasks_by_type || {},
@@ -170,8 +170,8 @@ export default function AdminDashboard() {
                       key={task.id}
                       className="flex items-start justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                     >
-                      <div className="flex-1">
-                        <p className="font-medium line-clamp-2">
+                      <div className="flex-1 max-w-[60%]">
+                        <p className="font-medium line-clamp-2 truncate">
                           {task.question}
                         </p>
                         <div className="flex gap-2 mt-2">
@@ -185,7 +185,7 @@ export default function AdminDashboard() {
                       </div>
                       <Link href={`/admin/writing-tasks/${task.id}`}>
                         <Button variant="outline" size="sm">
-                          Edit
+                          View
                         </Button>
                       </Link>
                     </div>

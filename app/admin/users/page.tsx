@@ -11,7 +11,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Trash2, Shield, User, Search } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Trash2, Shield, User, Search, Loader2 } from "lucide-react";
 import {
   listAllUsers,
   updateUserRole,
@@ -29,6 +39,12 @@ export default function UsersPage() {
     "all" | "student" | "super_admin"
   >("all");
   const [updatingUserId, setUpdatingUserId] = useState<string | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<{
+    id: string;
+    email: string;
+  } | null>(null);
+  const [isDeletingUser, setIsDeletingUser] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -103,19 +119,20 @@ export default function UsersPage() {
   };
 
   const handleDeleteUser = async (userId: string, userEmail: string) => {
-    if (
-      !confirm(
-        `Are you sure you want to delete user "${userEmail}"? This action cannot be undone.`
-      )
-    ) {
-      return;
-    }
+    setUserToDelete({ id: userId, email: userEmail });
+    setDeleteDialogOpen(true);
+  };
 
-    setUpdatingUserId(userId);
+  const confirmDelete = async () => {
+    if (!userToDelete) return;
+
+    setIsDeletingUser(true);
+    setUpdatingUserId(userToDelete.id);
+
     try {
-      const response = await deleteUserById(userId);
+      const response = await deleteUserById(userToDelete.id);
       if (response.success) {
-        setUsers(users.filter((u) => u.id !== userId));
+        setUsers(users.filter((u) => u.id !== userToDelete.id));
         toast.success("User deleted successfully");
       } else {
         toast.error(response.error || "Failed to delete user");
@@ -125,6 +142,10 @@ export default function UsersPage() {
       toast.error("Failed to delete user");
     } finally {
       setUpdatingUserId(null);
+      setIsDeletingUser(false);
+      setUserToDelete(null);
+      console.log("Closing dialog");
+      setDeleteDialogOpen(false);
     }
   };
 
@@ -141,6 +162,39 @@ export default function UsersPage() {
           Manage user roles and permissions
         </p>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete User</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete user "{userToDelete?.email}"? This
+              action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeletingUser}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              disabled={isDeletingUser}
+              
+              className="bg-destructive hover:bg-destructive/90 disabled:opacity-50"
+            >
+              {isDeletingUser ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Filters */}
       <Card>

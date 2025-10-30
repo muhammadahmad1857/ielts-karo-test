@@ -11,6 +11,7 @@ import {
   ImageIcon,
   LogOut,
   Menu,
+  ChevronDown,
 } from "lucide-react";
 import { logout } from "@/dal";
 import { LogoutButton } from "./auth/LogOutButton";
@@ -20,10 +21,19 @@ import { useState } from "react";
 export function AdminSidebar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
 
   const navItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/admin/writing-tasks", label: "Writing Tasks", icon: FileText },
+    {
+      href: "/admin/writing-tasks",
+      label: "Writing Tasks",
+      icon: FileText,
+      subItems: [
+        { href: "/admin/writing-tasks", label: "All Tasks" },
+        { href: "/admin/writing-tasks/restore", label: "Restore Tasks" },
+      ],
+    },
     { href: "/admin/users", label: "Users", icon: Users },
     { href: "/admin/media", label: "Media", icon: ImageIcon },
   ];
@@ -38,15 +48,81 @@ export function AdminSidebar() {
       <nav className="flex-1 p-4 space-y-2">
         {navItems.map((item) => {
           const Icon = item.icon;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const hasSubItems =
+            (item as any).subItems && (item as any).subItems.length > 0;
+          const isMenuExpanded = expandedMenu === item.href;
           const isActive = pathname === item.href;
+          if (hasSubItems) {
+            return (
+              <div key={item.href}>
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    "w-full justify-between gap-2",
+                    isActive &&
+                      "bg-sidebar-primary transition text-sidebar-primary-foreground hover:text-white hover:bg-sidebar-primary/90"
+                  )}
+                  onClick={() =>
+                    setExpandedMenu(isMenuExpanded ? null : item.href)
+                  }
+                >
+                  <div className="flex gap-2 items-center">
+                    <Icon className="w-4 h-4" />
+                    {item.label}
+                  </div>
+                  <ChevronDown
+                    className={cn(
+                      "w-4 h-4 transition-transform",
+                      isMenuExpanded && "rotate-180"
+                    )}
+                  />
+                </Button>
+
+                {isMenuExpanded && (
+                  <div className="mt-2 ml-4 space-y-1 border-l border-sidebar-border pl-3">
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                    {(item as any).subItems.map(
+                      (subItem: { href: string; label: string }) => {
+                        const isSubActive = pathname === subItem.href;
+                        return (
+                          <Link
+                            key={subItem.href}
+                            href={subItem.href}
+                            onClick={() => setOpen(false)}
+                          >
+                            <Button
+                              variant="ghost"
+                              className={cn(
+                                "w-full justify-start gap-2 text-sm",
+                                isSubActive &&
+                                  "bg-sidebar-primary transition text-sidebar-primary-foreground hover:text-white hover:bg-sidebar-primary/90"
+                              )}
+                            >
+                              {subItem.label}
+                            </Button>
+                          </Link>
+                        );
+                      }
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          }
+
           return (
-            <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setOpen(false)}
+            >
               <Button
                 variant="ghost"
                 className={cn(
                   "w-full justify-start gap-2",
                   isActive &&
-                    "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary"
+                    "bg-sidebar-primary transition text-sidebar-primary-foreground hover:text-white hover:bg-sidebar-primary/90"
                 )}
               >
                 <Icon className="w-4 h-4" />
@@ -73,7 +149,10 @@ export function AdminSidebar() {
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-64 p-0 bg-sidebar text-sidebar-foreground">
+          <SheetContent
+            side="left"
+            className="w-64 p-0 bg-sidebar text-sidebar-foreground"
+          >
             <aside className="flex flex-col h-full">
               <SidebarContent />
             </aside>

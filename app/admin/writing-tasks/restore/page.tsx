@@ -23,23 +23,22 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
-  Trash2,
-  Edit,
-  Plus,
+  RotateCcw,
   Search,
   CheckSquare,
   Square,
+  AlertCircle,
   Loader2,
 } from "lucide-react";
-import Link from "next/link";
+import { toast } from "sonner";
 import { WritingTask } from "@/types";
-import { deleteWritingTask, listWritingTasks } from "@/dal";
+import { listWritingTasks, restoreWritingTask } from "@/dal";
 
 /* -------------------------------------------------------------------------- */
-/*                                   PAGE                                     */
+/*                            RESTORE TASKS PAGE                              */
 /* -------------------------------------------------------------------------- */
 
-export default function WritingTasksPage() {
+export default function RestoreWritingTasksPage() {
   const [tasks, setTasks] = useState<WritingTask[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -51,24 +50,22 @@ export default function WritingTasksPage() {
   );
   const [filterBook, setFilterBook] = useState<string>("all");
   const [selectedTasks, setSelectedTasks] = useState<Set<string>>(new Set());
-  const [bulkUpdating, setBulkUpdating] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
-  const [bulkDeleteDialogOpen, setBulkDeleteDialogOpen] = useState(false);
-  const [isDeletingTask, setIsDeletingTask] = useState(false);
-  const [isDeletingBulk, setIsDeletingBulk] = useState(false);
+  const [bulkRestoring, setBulkRestoring] = useState(false);
+  const [restoringTaskId, setRestoringTaskId] = useState<string | null>(null);
+  const [bulkRestoreDialogOpen, setBulkRestoreDialogOpen] = useState(false);
+  const [isRestoringBulk, setIsRestoringBulk] = useState(false);
 
   /* ------------------------------ Fetch Tasks ----------------------------- */
   useEffect(() => {
-    fetchTasks();
+    fetchDeletedTasks();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterType, filterPart, filterBook]);
 
-  const fetchTasks = async () => {
+  const fetchDeletedTasks = async () => {
     setLoading(true);
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const params: any = { limit: 100 };
+      const params: any = { limit: 100, is_active: false };
       if (filterType !== "all") params.ielts_type = filterType;
       if (filterPart !== "all") params.writing_task = filterPart;
       if (filterBook !== "all")
@@ -78,63 +75,69 @@ export default function WritingTasksPage() {
       if (res.success && Array.isArray(res.data)) setTasks(res.data);
       else setTasks([]);
     } catch (error) {
-      console.error("❌ Failed to fetch tasks:", error);
+      console.error("❌ Failed to fetch deleted tasks:", error);
       setTasks([]);
     } finally {
       setLoading(false);
     }
   };
 
-  /* ------------------------------ Delete Task ----------------------------- */
-  const handleDelete = async (taskId: string) => {
-    setTaskToDelete(taskId);
-    setDeleteDialogOpen(true);
-  };
-
-  const confirmDelete = async () => {
-    if (!taskToDelete) return;
-
-    setDeleteDialogOpen(false);
-    setIsDeletingTask(true);
+  /* ------------------------------ Restore Task ------------------------------ */
+  const handleRestore = async (taskId: string) => {
+    setRestoringTaskId(taskId);
     try {
-      const res = await deleteWritingTask(taskToDelete);
+      const res = await restoreWritingTask(taskId);
       if (res.success) {
-        setTasks((prev) => prev.filter((t) => t.id !== taskToDelete));
+        setTasks((prev) => prev.filter((t) => t.id !== taskId));
         setSelectedTasks((prev) => {
           const copy = new Set(prev);
-          copy.delete(taskToDelete);
+          copy.delete(taskId);
           return copy;
         });
+        toast.success("✅ Task restored successfully!");
+      } else {
+        toast.error("❌ Failed to restore task: " + res.error);
       }
     } catch (error) {
-      console.error("❌ Failed to delete task:", error);
+      console.error("❌ Failed to restore task:", error);
+      toast.error("❌ Error restoring task");
     } finally {
-      setTaskToDelete(null);
-      setIsDeletingTask(false);
+      setRestoringTaskId(null);
     }
   };
 
-  /* ----------------------------- Bulk Delete ------------------------------ */
-  const handleBulkDelete = async () => {
+  /* ----------------------------- Bulk Restore ------------------------------ */
+  const handleBulkRestore = async () => {
     if (selectedTasks.size === 0) return;
-    setBulkDeleteDialogOpen(true);
+    setBulkRestoreDialogOpen(true);
   };
 
-  const confirmBulkDelete = async () => {
-    setBulkDeleteDialogOpen(false);
-    setBulkUpdating(true);
-    setIsDeletingBulk(true);
+  const confirmBulkRestore = async () => {
+    setBulkRestoreDialogOpen(false);
+    setBulkRestoring(true);
+    setIsRestoringBulk(true);
     try {
-      await Promise.all(
-        Array.from(selectedTasks).map((id) => deleteWritingTask(id))
+      const results = await Promise.all(
+        Array.from(selectedTasks).map((id) => restoreWritingTask(id))
       );
+
+      const successCount = results.filter((r) => r.success).length;
       setTasks((prev) => prev.filter((t) => !selectedTasks.has(t.id)));
       setSelectedTasks(new Set());
+
+      if (successCount === selectedTasks.size) {
+        toast.success(`✅ Successfully restored ${successCount} tasks!`);
+      } else {
+        toast.warning(
+          `⚠️ Restored ${successCount}/${selectedTasks.size} tasks. Some failed.`
+        );
+      }
     } catch (error) {
-      console.error("❌ Bulk delete failed:", error);
+      console.error("❌ Bulk restore failed:", error);
+      toast.error("❌ Bulk restore failed");
     } finally {
-      setBulkUpdating(false);
-      setIsDeletingBulk(false);
+      setBulkRestoring(false);
+      setIsRestoringBulk(false);
     }
   };
 
@@ -162,69 +165,36 @@ export default function WritingTasksPage() {
   /* ------------------------------- UI Render ------------------------------ */
   return (
     <div className="p-8 space-y-6">
-      {/* Delete Dialog */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Task</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this task? This action cannot be
-              undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeletingTask}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmDelete}
-              disabled={isDeletingTask}
-              className="bg-destructive hover:bg-destructive/90 disabled:opacity-50"
-            >
-              {isDeletingTask ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Deleting...
-                </>
-              ) : (
-                "Delete"
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* Bulk Delete Dialog */}
+      {/* Bulk Restore Dialog */}
       <AlertDialog
-        open={bulkDeleteDialogOpen}
-        onOpenChange={setBulkDeleteDialogOpen}
+        open={bulkRestoreDialogOpen}
+        onOpenChange={setBulkRestoreDialogOpen}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              Delete {selectedTasks.size} Tasks
+              Restore {selectedTasks.size} Tasks
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete {selectedTasks.size} task(s)? This
-              action cannot be undone.
+              Are you sure you want to restore {selectedTasks.size} task(s)?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeletingBulk}>
+            <AlertDialogCancel disabled={isRestoringBulk}>
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              onClick={confirmBulkDelete}
-              disabled={isDeletingBulk}
-              className="bg-destructive hover:bg-destructive/90 disabled:opacity-50"
+              onClick={confirmBulkRestore}
+              disabled={isRestoringBulk}
+              className="bg-green-600 hover:bg-green-700 disabled:opacity-50"
             >
-              {isDeletingBulk ? (
+              {isRestoringBulk ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Deleting...
+                  Restoring...
                 </>
               ) : (
-                "Delete"
+                "Restore"
               )}
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -233,17 +203,12 @@ export default function WritingTasksPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Writing Tasks</h1>
-          <p className="text-muted-foreground">
-            Manage IELTS writing tasks with advanced filtering
+          <h1 className="text-3xl font-bold">Restore Writing Tasks</h1>
+          <p className="text-muted-foreground flex items-center gap-2 mt-1">
+            <AlertCircle className="w-4 h-4" />
+            Manage deleted IELTS writing tasks
           </p>
         </div>
-        <Link href="/admin/writing-tasks/new">
-          <Button className="gap-2 bg-primary hover:bg-primary/90">
-            <Plus className="w-4 h-4" />
-            New Task
-          </Button>
-        </Link>
       </div>
 
       {/* Filters */}
@@ -326,13 +291,18 @@ export default function WritingTasksPage() {
               </p>
               <div className="flex gap-2">
                 <Button
-                  variant="destructive"
-                  onClick={handleBulkDelete}
-                  disabled={bulkUpdating}
-                  className="gap-2"
+                  onClick={handleBulkRestore}
+                  disabled={bulkRestoring}
+                  className="gap-2 bg-green-600 hover:bg-green-700"
                 >
-                  <Trash2 className="w-4 h-4" />
-                  Delete {selectedTasks.size}
+                  {bulkRestoring ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <RotateCcw className="w-4 h-4" />
+                  )}
+                  {bulkRestoring
+                    ? "Restoring..."
+                    : `Restore ${selectedTasks.size}`}
                 </Button>
               </div>
             </div>
@@ -344,7 +314,7 @@ export default function WritingTasksPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Tasks ({filteredTasks.length})</CardTitle>
+            <CardTitle>Deleted Tasks ({filteredTasks.length})</CardTitle>
             {filteredTasks.length > 0 && (
               <Button
                 variant="outline"
@@ -371,7 +341,7 @@ export default function WritingTasksPage() {
             <div className="flex items-center justify-center py-12">
               <div className="text-center">
                 <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                <p>Loading tasks...</p>
+                <p>Loading deleted tasks...</p>
               </div>
             </div>
           ) : filteredTasks.length > 0 ? (
@@ -379,9 +349,46 @@ export default function WritingTasksPage() {
               {filteredTasks.map((task) => (
                 <div
                   key={task.id}
-                  className="flex  justify-between items-center gap-4 p-4 border max-w-full rounded-lg hover:bg-muted/50 transition-colors"
+                  className="flex items-center gap-4 p-4 border rounded-lg hover:bg-muted/50 transition-colors border-destructive/20"
                 >
-                  <div className="flex items-center gap-2 max-w-[60%]">
+                  {/* <input
+                    type="checkbox"
+                    checked={selectedTasks.has(task.id)}
+                    onChange={(e) => {
+                      const copy = new Set(selectedTasks);
+                      if (e.target.checked) copy.add(task.id);
+                      else copy.delete(task.id);
+                      setSelectedTasks(copy);
+                    }}
+                    className="w-4 h-4"
+                  />
+                  <div className="flex-1">
+                    <p className="font-medium line-clamp-2">{task.question}</p>
+                    <div className="flex gap-2 mt-2 flex-wrap">
+                      <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+                        {task.ielts_type === "academic"
+                          ? "Academic"
+                          : "General"}
+                      </span>
+                      <span className="text-xs bg-secondary/10 text-secondary px-2 py-1 rounded">
+                        {task.writing_task === "part_1" ? "Part 1" : "Part 2"}
+                      </span>
+                      {task.ielts_test_book?.book_number && (
+                        <span className="text-xs bg-muted px-2 py-1 rounded">
+                          Book {task.ielts_test_book.book_number}
+                        </span>
+                      )}
+                      {task.ielts_test_book?.test_number && (
+                        <span className="text-xs bg-muted px-2 py-1 rounded">
+                          Test {task.ielts_test_book.test_number}
+                        </span>
+                      )}
+                      <span className="text-xs bg-destructive/10 text-destructive px-2 py-1 rounded">
+                        Deleted
+                      </span>
+                    </div>
+                  </div> */}
+                    <div className="flex items-center gap-2 max-w-[60%]">
                     <input
                       type="checkbox"
                       checked={selectedTasks.has(task.id)}
@@ -420,30 +427,18 @@ export default function WritingTasksPage() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Link href={`/admin/writing-tasks/${task.id}`}>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-2 bg-transparent"
-                      >
-                        <Edit className="w-4 h-4" /> View
-                      </Button>
-                    </Link>
-                    <Link href={`/admin/writing-tasks/${task.id}/edit`}>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-2 bg-transparent"
-                      >
-                        <Edit className="w-4 h-4" /> Edit
-                      </Button>
-                    </Link>
                     <Button
-                      variant="destructive"
+                      onClick={() => handleRestore(task.id)}
+                      disabled={restoringTaskId === task.id}
+                      className="gap-2 bg-green-600 hover:bg-green-700"
                       size="sm"
-                      onClick={() => handleDelete(task.id)}
                     >
-                      <Trash2 className="w-4 h-4" />
+                      {restoringTaskId === task.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <RotateCcw className="w-4 h-4" />
+                      )}
+                      {restoringTaskId === task.id ? "Restoring..." : "Restore"}
                     </Button>
                   </div>
                 </div>
@@ -452,14 +447,11 @@ export default function WritingTasksPage() {
           ) : (
             <div className="text-center py-12">
               <p className="text-muted-foreground mb-4">
-                No writing tasks found
+                No deleted writing tasks found
               </p>
-              <Link href="/admin/writing-tasks/new">
-                <Button className="gap-2 bg-primary hover:bg-primary/90">
-                  <Plus className="w-4 h-4" />
-                  Create First Task
-                </Button>
-              </Link>
+              <p className="text-sm text-muted-foreground">
+                All your writing tasks are active and safe!
+              </p>
             </div>
           )}
         </CardContent>

@@ -86,7 +86,7 @@ export async function getUserById(
   userId: ObjectId
 ): Promise<ApiResponse<User>> {
   try {
-    const { data } = await apiWithAuth.get<User>(`/users/${userId}`);
+    const { data } = await apiWithAuth.get<User>(`/admin/users/${userId}`);
 
     return {
       data,
@@ -120,7 +120,7 @@ export async function updateUserById(
 ): Promise<ApiResponse<User>> {
   try {
     const { data } = await apiWithAuth.patch<User>(
-      `/users/${userId}`,
+      `/admin/users/${userId}`,
       userData
     );
 
@@ -162,7 +162,7 @@ export async function deleteUserById(
   userId: ObjectId
 ): Promise<ApiResponse<void>> {
   try {
-    await apiWithAuth.delete(`/users/${userId}`);
+    await apiWithAuth.delete(`/admin/users/${userId}`);
 
     return {
       data: null,

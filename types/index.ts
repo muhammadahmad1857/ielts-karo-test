@@ -208,6 +208,7 @@ export interface WritingTaskStats {
   tasks_by_type?: Record<string, number>;
   tasks_by_part?: Record<string, number>;
   tasks_by_book?: Record<string, number>;
+  active_tasks: number;
 }
 
 // ============================================
