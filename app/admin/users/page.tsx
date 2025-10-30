@@ -169,8 +169,8 @@ export default function UsersPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete User</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete user "{userToDelete?.email}"? This
-              action cannot be undone.
+              Are you sure you want to delete user &quot;{userToDelete?.email}
+              &quot;? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -180,7 +180,6 @@ export default function UsersPage() {
             <AlertDialogAction
               onClick={confirmDelete}
               disabled={isDeletingUser}
-              
               className="bg-destructive hover:bg-destructive/90 disabled:opacity-50"
             >
               {isDeletingUser ? (

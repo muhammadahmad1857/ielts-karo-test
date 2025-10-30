@@ -153,7 +153,7 @@ export default function MediaPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Media</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete "{mediaToDelete?.filename}"? This
+              Are you sure you want to delete &quot;{mediaToDelete?.filename}&quot;? This
               action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
