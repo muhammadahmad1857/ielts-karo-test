@@ -34,7 +34,7 @@ export const apiWithAuth = axios.create({
 //   return config;
 // });
 
-import { getToken } from "@/dal/auth/getToken"; // Adjust the import path
+import { getToken } from "@/dal/auth/token-storage"; // Adjust the import path
 
 apiWithAuth.interceptors.request.use(async (config) => {
   console.log("Interceptor: Token fetched or not"); // Confirm token is retrieved

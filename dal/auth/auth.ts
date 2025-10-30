@@ -15,7 +15,7 @@ import type {
   PasswordResetRequest,
   OAuth2AuthorizeResponse,
 } from "@/types";
-import { logOut } from "./getToken";
+import { logOut } from "./token-storage";
 import axios from "axios";
 
 /**

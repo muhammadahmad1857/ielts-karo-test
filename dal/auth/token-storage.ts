@@ -6,7 +6,7 @@ export async function getToken() {
   console.log("User fetching startedd");
   const cookieStore = await cookies();
   const userToken = cookieStore.get("token");
-  console.log(userToken)
+  console.log(userToken);
 
   if (!userToken) {
     console.log("No user cookie found");
@@ -14,13 +14,22 @@ export async function getToken() {
   }
 
   try {
-    const  token  = userToken?.value;
+    const token = userToken?.value;
     console.log("Token fetched successfully", token);
     return token;
   } catch (error) {
     console.error("Error parsing user cookie:", error);
     return null;
   }
+}
+
+export async function setToken(key: string, value: string) {
+  console.log("User Token saved");
+  const cookieStore = await cookies();
+  const userToken = cookieStore.set(key, value);
+  console.log(userToken);
+
+  return true;
 }
 
 const logOut = async () => {

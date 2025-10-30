@@ -5,7 +5,7 @@ import type React from "react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AdminSidebar } from "@/components/admin-sidebar";
-import { getToken } from "@/dal/auth/getToken";
+import { getToken } from "@/dal/auth/token-storage";
 import { isSuperAdmin as checkSuperAdmin } from "@/dal/auth/users";
 import { getCurrentUser } from "@/dal";
 

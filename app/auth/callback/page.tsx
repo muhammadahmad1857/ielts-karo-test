@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { api } from "@/lib/axios";
 import Spinner from "@/components/Loader";
 import { handleGoogleCallback } from "@/dal";
-
+import { setToken } from "@/dal/auth/token-storage";
 export default function CallbackPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function CallbackPage() {
 
     const fetchToken = async () => {
       const res = await handleGoogleCallback({ code });
-      if (res.success) {
+      if (res.success && res.data?.access_token) {
         setToken("token", res.data?.access_token);
         router.push("/admin");
       } else {
