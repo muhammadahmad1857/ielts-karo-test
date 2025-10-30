@@ -6,6 +6,8 @@ import { api } from "@/lib/axios";
 import Spinner from "@/components/Loader";
 import { handleGoogleCallback } from "@/dal";
 import { setToken } from "@/dal/auth/token-storage";
+export const dynamic = "force-dynamic";
+
 export default function CallbackPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
