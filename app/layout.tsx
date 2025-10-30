@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
-//@ts-expect-error -- ignoreing ts error for css module
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -22,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${roboto.className} antialiased`}>
-            <script src="https://accounts.google.com/gsi/client" async></script>
+        <script src="https://accounts.google.com/gsi/client" async></script>
 
         {children}
         <Toaster closeButton={true} richColors={true} />
